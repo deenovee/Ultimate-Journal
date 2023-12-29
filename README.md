@@ -50,7 +50,7 @@ Install the required dependencies:
 pip install -r requirements.txt
 ```
 
-##Running the Application
+## Running the Application
 Execute the main application script:
 
 ```
