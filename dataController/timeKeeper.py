@@ -113,11 +113,16 @@ class TimeKeeper:
                 except ValueError:
                     print("Invalid input. Please enter a valid number.")
 
-            #create a list to store data
-            date = datetime.datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
-
             #loop through the number of inputs
             for i in range(int(inputNumber)):
+                while True:
+                    date = input("Enter date (MM/DD/YY): ")
+                    try:
+                        date = datetime.datetime.strptime(date, "%m/%d/%y").replace(hour=0, minute=0, second=0, microsecond=0)
+                        break
+                    except ValueError:
+                        print(ValueError)
+
                 #validate minutes input
                 while True:
                     inputTime = input("Enter time in minutes: ")
@@ -239,15 +244,55 @@ class TimeKeeper:
                         print("Invalid input.")
                 except ValueError:
                     print("Invalid input try again.")
-            
-            while True:
-                newValue = input("Enter new value: ")
-                if newValue:
-                    query = {"_id": ObjectId(id)}
-                    update_query = {"$set": {f"{selectedKey}": newValue}}
-                    break
-                else:
-                    print("Invalid input try again.")
+
+            if userInput == 2:
+                while True:
+                    date = input("Enter new date (MM/DD/YY): ")
+                    try:
+                        date = datetime.datetime.strptime(date, "%m/%d/%y").replace(hour=0, minute=0, second=0, microsecond=0)
+                        query = {"_id": ObjectId(id)}
+                        update_query = {"$set": {f"{selectedKey}": date}}
+                        break
+                    except ValueError:
+                        print(ValueError)
+
+            elif userInput == 3:   
+                while True:
+                    time = input("Enter new time in minutes: ")
+                    try:
+                        time = int(time)
+                        query = {"_id": ObjectId(id)}
+                        update_query = {"$set": {f"{selectedKey}": time}}
+                        break
+                    except ValueError:
+                        print(ValueError)
+
+            elif userInput == 5:
+                categoryList = ['HEALTH', 'WORK', 'PROJECT', 'EDUCATION', 'READING', 'HOBBY', 'NETWORKING', 'OTHER']
+                for index, i in enumerate(categoryList):
+                    j = index + 1
+                    print(f"{j} - {i}")
+                while True:
+                    category = input("Enter new category: ")
+                    try:
+                        category = int(category)
+                        if 1 <= category <= len(categoryList):
+                            categoryChoice = categoryList[category-1]
+                            query = {"_id": ObjectId(id)}
+                            update_query = {"$set": {f"{selectedKey}": categoryChoice}}
+                            break
+                    except ValueError:
+                        print(ValueError)
+
+            else:  
+                while True:
+                    newValue = input("Enter new value: ")
+                    if newValue:
+                        query = {"_id": ObjectId(id)}
+                        update_query = {"$set": {f"{selectedKey}": newValue}}
+                        break
+                    else:
+                        print("Invalid input try again.")
             
             try:
                 self.update(query, update_query)

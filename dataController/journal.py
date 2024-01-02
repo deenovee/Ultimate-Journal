@@ -83,7 +83,13 @@ class Journal:
             print("Error retrieving data from database")
     
     def collectData(self):
-        date = datetime.datetime.now()
+        while True:
+            date = input("Enter date (MM/DD/YY): ")
+            try:
+                date = datetime.datetime.strptime(date, "%m/%d/%y").replace(hour=0, minute=0, second=0, microsecond=0)
+                break
+            except ValueError:
+                print(ValueError)
         #validate minutes input
         print("Start journal below:")
         inputText = ""  # Initialize inputText outside the loop

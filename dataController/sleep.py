@@ -263,21 +263,27 @@ class Sleep:
 
             if userInput == 2 or userInput == 3:
                 while True:
-                    newValue = input("Enter new value (HH:MM): ")
+                    new_time= input("Enter new value (HH:MM): ")
                     try:
-                        new_time = datetime.datetime.strptime(newValue, "%H:%M").time()
-                        # Combine the date from the existing time_start with the new time
-                        if userInput == 2:
-                            existing_date = objectToUpdate["time_start"].date()
-                        elif userInput == 3:
-                            existing_date = objectToUpdate["time_end"].date()
-
-                        combined_datetime = datetime.datetime.combine(existing_date, new_time)
-                        query = {"_id": ObjectId(id)}
-                        update_query = {"$set": {f"{selectedKey}": combined_datetime}}
+                        new_time = datetime.datetime.strptime(new_time, "%H:%M").time()
                         break
                     except ValueError:
                         print("Incorrect data format, should be HH:MM")
+                while True:
+                    new_date = input("Enter new date (MM/DD/YY): ")
+                    try:
+                        new_date = datetime.datetime.strptime(new_date, "%m/%d/%y").date()
+                        break
+                    except ValueError:
+                        print("Incorrect data format, should be MM/DD/YY")
+                combined_datetime = datetime.datetime.combine(new_date, new_time)
+                try:
+                    query = {"_id": ObjectId(id)}
+                    update_query = {"$set": {f"{selectedKey}": combined_datetime}}
+                except pymongo.errors.PyMongoError as e:
+                    print(f"Error: {e}\nError updating data in database")
+                except Exception as e:
+                    print("An unexpected error occurred: {e}")
             else:
                 while True:
                     newValue = input("Enter new value: ")
