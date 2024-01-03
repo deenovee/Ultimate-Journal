@@ -1,4 +1,5 @@
 import datetime
+from datetime import timedelta
 import pymongo
 from pymongo import MongoClient
 from bson import ObjectId
@@ -35,7 +36,8 @@ class Journal:
             print(f"An unexpected error occurred: {e}")
 
     def get_one(self):
-        return self.collection.find_one(sort=[("date", 1)])
+        date = datetime.datetime.now().replace(hour=0, minute=0, second=0, microsecond=0) - timedelta(days=1)
+        return self.collection.find_one({"date": {"$gte": date}}, sort=[("date", -1)])
 
     def delete(self, data):
         if "/" in data["_id"]:
@@ -212,15 +214,25 @@ class Journal:
                         print("Invalid input.")
                 except ValueError:
                     print("Invalid input try again.")
-
-            while True:
-                newValue = input("Enter new value: ")
-                if newValue:
-                    query = {"_id": ObjectId(id)}
-                    update_query = {"$set": {f"{selectedKey}": newValue}}
-                    break
-                else:
-                    print("Invalid input try again.")
+            if userInput == 2:
+                while True:
+                    newValue = input("Enter new value (MM/DD/YY): ")
+                    try:
+                        newValue = datetime.datetime.strptime(newValue, "%m/%d/%y").replace(hour=0, minute=0, second=0, microsecond=0)
+                        query = {"_id": ObjectId(id)}
+                        update_query = {"$set": {f"{selectedKey}": newValue}}
+                        break
+                    except ValueError:
+                        print(ValueError)
+            else:
+                while True:
+                    newValue = input("Enter new value: ")
+                    if newValue:
+                        query = {"_id": ObjectId(id)}
+                        update_query = {"$set": {f"{selectedKey}": newValue}}
+                        break
+                    else:
+                        print("Invalid input try again.")
             
             try:
                 self.update(query, update_query)
@@ -298,3 +310,37 @@ class Journal:
                 else:
                     print("")
                     print(f"Record {j}:\n _id = {i['_id']}\ndate = {i['date']}\nJOURNAL\n{i['journal']}")
+
+    def displaySingleDate(self):
+        try:
+            existingData = list(self.get({}))
+        except Exception as e:
+            print("Error retrieving data from database")
+        if existingData:
+            while True:
+                try:
+                    date = input("Enter date (MM/DD/YY): ")
+                    parsed_date = datetime.datetime.strptime(date, "%m/%d/%y")
+                    break
+                except ValueError:
+                    print("Incorrect data format, should be MM/DD/YY")
+            query = {
+                "date": parsed_date
+            }
+            try:
+                filteredData = list(self.get(query))
+            except Exception as e:
+                print(e)
+                print("Error retrieving data from database\n")
+            if filteredData:
+                for index, i in enumerate(filteredData):
+                    j = index + 1 
+                    if j == len(filteredData):
+                        print("")
+                        print(f"Record {j}:\n _id = {i['_id']}\ndate = {i['date']}\nJOURNAL\n{i['journal']}")
+                        print("")
+                    else:
+                        print("")
+                        print(f"Record {j}:\n _id = {i['_id']}\ndate = {i['date']}\nJOURNAL\n{i['journal']}")
+            else:
+                print("No data to display")

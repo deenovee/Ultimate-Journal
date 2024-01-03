@@ -34,6 +34,9 @@ class Health:
     def display_all_sleep_data(self):
         self.sleep.displayAllData()
 
+    def display_single_sleep_data(self):
+        self.sleep.displaySingleDate()
+
     #Exercise functions
     def insert_exercise_doc(self):
         self.exercise.collectData()
@@ -50,6 +53,9 @@ class Health:
     def display_all_exercise_data(self):
         self.exercise.displayAllData()
     
+    def display_single_exercise_data(self):
+        self.exercise.displaySingleDate()
+    
     #Nutrition functions
     def insert_nutrition_doc(self):
         self.nutrition.collectData()
@@ -65,6 +71,9 @@ class Health:
 
     def display_all_nutrition_data(self):
         self.nutrition.displayAllData()
+    
+    def display_single_nutrition_data(self):
+        self.nutrition.displaySingleDate()
 
     
 

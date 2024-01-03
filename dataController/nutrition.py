@@ -364,3 +364,37 @@ class Nutrition:
         else:
             print("No data to display")
             print("Exiting...\n")
+
+    def displaySingleDate(self):
+        try:
+            existingData = list(self.get({}))
+        except Exception as e:
+            print("Error retrieving data from database")
+        if existingData:
+            while True:
+                try:
+                    date = input("Enter date (MM/DD/YY): ")
+                    parsed_date = datetime.datetime.strptime(date, "%m/%d/%y")
+                    break
+                except ValueError:
+                    print("Incorrect data format, should be MM/DD/YY")
+            query = {
+                "date": parsed_date
+            }
+            try:
+                filteredData = list(self.get(query))
+            except Exception as e:
+                print(e)
+                print("Error retrieving data from database\n")
+            if filteredData:
+                for index, i in enumerate(filteredData):
+                    j = index + 1 
+                    if j == len(filteredData):
+                        print("")
+                        print(f"Record {index + 1}:\n _id = {i['_id']}\ndate = {i['date']}\nCalories = {i['calories']}\nProtein = {i['protein']}\nFat = {i['fat']}\nCarbs = {i['carbs']}\nWater = {i['water']}\nAlcohol = {i['alcohol']}\nFood Type = {i['food_type']}")
+                        print("")
+                    else:
+                        print("")
+                        print(f"Record {index + 1}:\n _id = {i['_id']}\ndate = {i['date']}\nCalories = {i['calories']}\nProtein = {i['protein']}\nFat = {i['fat']}\nCarbs = {i['carbs']}\nWater = {i['water']}\nAlcohol = {i['alcohol']}\nFood Type = {i['food_type']}")
+            else:
+                print("No data to display")

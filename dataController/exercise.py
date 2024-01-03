@@ -362,3 +362,37 @@ class Exercise:
         else:
             print("No data to display")
             print("Exiting...\n")
+
+    def displaySingleDate(self):
+        try:
+            existingData = list(self.get({}))
+        except Exception as e:
+            print("Error retrieving data from database")
+        if existingData:
+            while True:
+                try:
+                    date = input("Enter date (MM/DD/YY): ")
+                    parsed_date = datetime.datetime.strptime(date, "%m/%d/%y")
+                    break
+                except ValueError:
+                    print("Incorrect data format, should be MM/DD/YY")
+            query = {
+                "date": parsed_date
+            }
+            try:
+                filteredData = list(self.get(query))
+            except Exception as e:
+                print(e)
+                print("Error retrieving data from database\n")
+            if filteredData:
+                for index, i in enumerate(filteredData):
+                    j = index + 1 
+                    if j == len(filteredData):
+                        print("")
+                        print(f"Record {j}:\n _id = {i['_id']}\n date = {i['date']}\n exercise_type = {i['exercise_type']}\n duration = {i['duration']} minutes\n effort = {i['effort']}\n reps = {i['reps']}\n weight = {i['weight']}\n distance = {i['distance']} miles\n description = {i['description']}")
+                        print("")
+                    else:
+                        print("")
+                        print(f"Record {j}:\n _id = {i['_id']}\n date = {i['date']}\n exercise_type = {i['exercise_type']}\n duration = {i['duration']} minutes\n effort = {i['effort']}\n reps = {i['reps']}\n weight = {i['weight']}\n distance = {i['distance']} miles\n description = {i['description']}")
+            else:
+                print("No data to display")

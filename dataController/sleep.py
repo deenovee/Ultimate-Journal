@@ -381,3 +381,41 @@ class Sleep:
         else:
             print("No data to display")
             print("Exiting...")
+
+    def displaySingleDate(self):
+        try:
+            existingData = list(self.get({}))
+        except Exception as e:
+            print("Error retrieving data from database")
+
+        if existingData:
+            while True:
+                try:
+                    date = input("Enter date (MM/DD/YY): ")
+                    parsed_date = datetime.datetime.strptime(date, "%m/%d/%y")
+                    break
+                except ValueError:
+                    print("Incorrect data format, should be MM/DD/YY")
+            query = {
+                "time_end": {
+                    "$gte": parsed_date,
+                    "$lt": parsed_date + timedelta(days=1)
+                }
+            }
+            try:
+                filteredData = list(self.get(query))
+            except Exception as e:
+                print(e)
+                print("Error retrieving data from database\n")
+            if filteredData:
+                for index, i in enumerate(filteredData):
+                    j = index + 1 
+                    if j == len(filteredData):
+                        print("")
+                        print(f"Record {j}:\n ObjectId: {i['_id']}\n Start: {i['time_start'].strftime('%Y-%m-%d %H:%M:%S')}\n End: {i['time_end'].strftime('%Y-%m-%d %H:%M:%S')}\n Hours: {i['hours']}\n Quality: {i['quality']}\n Nap: {i['nap']}")
+                        print("")
+                    else:
+                        print("")
+                        print(f"Record {j}:\n ObjectId: {i['_id']}\n Start: {i['time_start'].strftime('%Y-%m-%d %H:%M:%S')}\n End: {i['time_end'].strftime('%Y-%m-%d %H:%M:%S')}\n Hours: {i['hours']}\n Quality: {i['quality']}\n Nap: {i['nap']}")
+            else:
+                print("No data to display")

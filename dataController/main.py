@@ -21,7 +21,7 @@ while True:
         print("Recent Data: ")
         timeKeeper.displayData()
         while True:
-            tk_choice = input(Fore.BLUE + "(1)Insert, 2(Delete), (3)Update, (4)List By Date, (5)List All Data, (6)Exit: (1/2/3/4/5/6): " + Style.RESET_ALL)
+            tk_choice = input(Fore.BLUE + "(1)Insert, 2(Delete), (3)Update, (4)List By Date, (5)List All Data, (6)Display Single Date, (7)Exit: (1/2/3/4/5/6/7): " + Style.RESET_ALL)
             if tk_choice == "1":
                 timeKeeper.collectData()
             elif tk_choice == "2":
@@ -33,6 +33,8 @@ while True:
             elif tk_choice == "5":
                 timeKeeper.displayAllData()
             elif tk_choice == "6":
+                timeKeeper.displaySingleDate()
+            elif tk_choice == "7":
                 print("")
                 print("Exiting TimeKeeper...")
                 print("")
@@ -45,7 +47,7 @@ while True:
         print("Last Entry: ")
         journal.displayRecentJournal()
         while True:
-            journal_choice = input(Fore.BLUE + "(1)Insert, 2(Delete), (3)Update, (4)List By Date Range, (5)List All Data, (6)Exit: (1/2/3/4/5/6): " + Style.RESET_ALL)
+            journal_choice = input(Fore.BLUE + "(1)Insert, 2(Delete), (3)Update, (4)List By Date Range, (5)List All Data, (6)Display Single Date, (7)Exit: (1/2/3/4/5/6/7): " + Style.RESET_ALL)
             if journal_choice == "1":
                 journal.collectData()
             elif journal_choice == "2":
@@ -57,6 +59,8 @@ while True:
             elif journal_choice == "5":
                 journal.displayAllData()
             elif journal_choice == "6":
+                journal.displaySingleDate()
+            elif journal_choice == "7":
                 print("")
                 print("Exiting Journal...")
                 print("")
@@ -71,7 +75,7 @@ while True:
             if health_choice == "1":
                 health.sleep_dash()
                 while True:
-                    sleep_choice = input(Fore.MAGENTA + "(1)Insert, (2)Delete, (3)Update, (4)List By Date Range, (5)List All Data, (6)Exit: (1/2/3/4/5/6): " + Style.RESET_ALL)
+                    sleep_choice = input(Fore.MAGENTA + "(1)Insert, (2)Delete, (3)Update, (4)List By Date Range, (5)List All Data, (6)Display Single Date, (7)Exit: (1/2/3/4/5/6/7): " + Style.RESET_ALL)
                     if sleep_choice == "1":
                         health.insert_sleep_doc()
                     elif sleep_choice == "2":
@@ -83,6 +87,8 @@ while True:
                     elif sleep_choice == "5":
                         health.display_all_sleep_data()
                     elif sleep_choice == "6":
+                        health.display_single_sleep_data()
+                    elif sleep_choice == "7":
                         print("")
                         print("Exiting Sleep...")
                         print("")
@@ -92,7 +98,7 @@ while True:
             elif health_choice == "2":
                 health.exercise_dash()
                 while True:
-                    exercise_choice = input(Fore.MAGENTA + "(1)Insert, (2)Delete, (3)Update, (4)List By Date Range, (5)List All Data, (6)Exit: (1/2/3/4/5/6): " + Style.RESET_ALL)
+                    exercise_choice = input(Fore.MAGENTA + "(1)Insert, (2)Delete, (3)Update, (4)List By Date Range, (5)List All Data, (6)Display Single Date,(7)Exit: (1/2/3/4/5/6/7): " + Style.RESET_ALL)
                     if exercise_choice == "1":
                         health.insert_exercise_doc()
                     elif exercise_choice == "2":
@@ -104,6 +110,8 @@ while True:
                     elif exercise_choice == "5":
                         health.display_all_exercise_data()
                     elif exercise_choice == "6":
+                        health.display_single_exercise_data()
+                    elif exercise_choice == "7":
                         print("")
                         print("Exiting Exercise...")
                         print("")
@@ -113,7 +121,7 @@ while True:
             elif health_choice == "3":
                 health.nutrition_dash()
                 while True:
-                    nutrition_choice = input(Fore.MAGENTA + "(1)Insert, (2)Delete, (3)Update, (4)List By Date Range, (5)List All Data, (6)Exit: (1/2/3/4/5/6): " + Style.RESET_ALL)
+                    nutrition_choice = input(Fore.MAGENTA + "(1)Insert, (2)Delete, (3)Update, (4)List By Date Range, (5)List All Data, (6)Display Single Date, (7)Exit: (1/2/3/4/5/6/7): " + Style.RESET_ALL)
                     if nutrition_choice == "1":
                         health.insert_nutrition_doc()
                     elif nutrition_choice == "2":
@@ -125,6 +133,8 @@ while True:
                     elif nutrition_choice == "5":
                         health.display_all_nutrition_data()
                     elif nutrition_choice == "6":
+                        health.display_single_nutrition_data()
+                    elif nutrition_choice == "7":
                         print("")
                         print("Exiting Nutrition...")
                         print("")
