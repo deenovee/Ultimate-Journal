@@ -112,16 +112,16 @@ class TimeKeeper:
                         print("Invalid input. Please enter a number between 1 and 10.")
                 except ValueError:
                     print("Invalid input. Please enter a valid number.")
-
+            while True:
+                date = input("Enter date (MM/DD/YY): ")
+                try:
+                    date = datetime.datetime.strptime(date, "%m/%d/%y").replace(hour=0, minute=0, second=0, microsecond=0)
+                    break
+                except ValueError:
+                    print(ValueError)
+                    
             #loop through the number of inputs
             for i in range(int(inputNumber)):
-                while True:
-                    date = input("Enter date (MM/DD/YY): ")
-                    try:
-                        date = datetime.datetime.strptime(date, "%m/%d/%y").replace(hour=0, minute=0, second=0, microsecond=0)
-                        break
-                    except ValueError:
-                        print(ValueError)
 
                 #validate minutes input
                 while True:

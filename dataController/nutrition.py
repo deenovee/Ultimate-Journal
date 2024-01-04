@@ -151,21 +151,18 @@ class Nutrition:
                     except ValueError:
                         print("Invalid input")
                 while True:
-                    water = input("Enter water: ")
+                    water = input("Enter water # of pints: ")
                     try:
                         water = int(water)
                         break
                     except ValueError:
                         print("Invalid input")
                 while True:
-                    alcohol = input("Enter alcohol (y/n): ")
-                    if alcohol == "y":
-                        alcohol = True
+                    alcohol = input("Enter alcohol # of drinks: ")
+                    try:
+                        int(alcohol)
                         break
-                    elif alcohol == "n":
-                        alcohol = False
-                        break
-                    else:
+                    except ValueError:
                         print("Invalid input")
                 while True:
                     types_list = ["SMALL MEAL", "LARGE MEAL", "SNACK", "DESSERT", "DRINK"]
@@ -275,14 +272,28 @@ class Nutrition:
                 except ValueError:
                     print("Invalid input try again.")
 
-            while True:
-                newValue = input("Enter new value: ")
-                if newValue:
-                    query = {"_id": ObjectId(id)}
-                    update_query = {"$set": {f"{selectedKey}": newValue}}
-                    break
-                else:
-                    print("Invalid input try again.")
+            if userInput == 2:
+                while True:
+                    newValue = input("Enter new value (MM/DD/YY): ")
+                    if newValue:
+                        try:
+                            newValue = datetime.datetime.strptime(newValue, "%m/%d/%y")
+                            query = {"_id": ObjectId(id)}
+                            update_query = {"$set": {f"{selectedKey}": newValue}}
+                            break
+                        except ValueError:
+                            print("Incorrect data format, should be MM/DD/YY")
+                    else:
+                        print("Invalid input try again.")
+            else:
+                while True:
+                    newValue = input("Enter new value: ")
+                    if newValue:
+                        query = {"_id": ObjectId(id)}
+                        update_query = {"$set": {f"{selectedKey}": newValue}}
+                        break
+                    else:
+                        print("Invalid input try again.")
 
             #update data from database
             try:
