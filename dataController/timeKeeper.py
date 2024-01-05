@@ -1,68 +1,14 @@
-import pymongo
+from mongo import MongoDB
 import datetime
 from datetime import date, timedelta
 from bson import ObjectId
 
 class TimeKeeper:
     def __init__(self):
-        self.client = pymongo.MongoClient("mongodb://localhost:27017/")
-        self.db = self.client["MyDashboard"]
-        self.collection = self.db["timeKeeper"]
-
-    def insert(self, data):
-        try:
-            self.collection.insert_one(data)
-        except pymongo.errors.PyMongoError as e:
-            print(f"Failed to insert document: {e}")
-
-    def get(self, query):
-        try:
-            return self.collection.find(query)
-        except pymongo.errors.PyMongoError as e:
-            print(f"MongoDB query failed: {e}")
-        except Exception as e:
-            print(f"An unexpected error occurred: {e}")
-    
-    def get_by_id(self, id):
-        try:
-            return self.collection.find_one({"_id": ObjectId(id['_id'])})
-        except pymongo.errors.PyMongoError as e:
-            print(f"MongoDB query failed: {e}")
-        except Exception as e:
-            print(f"An unexpected error occurred: {e}")
-
-    def delete(self, data):
-        if "/" in data["_id"]:
-            try:
-                objectIds = data["_id"].split("/")
-                for i in objectIds:
-                    query = {"_id": ObjectId(i)}
-                    self.collection.delete_one(query)
-                    print("Record deleted")
-            except Exception as e:
-                print(e)
-                print("Error handling multpiple ids")
-                print("trying single id")
-        else:
-            query = {"_id": ObjectId(data["_id"])}
-            try:
-                self.collection.delete_one(query)
-                print("Record deleted")
-            except Exception as e:
-                print(e)
-                print("Error deleting data from database")
-            
-    def update(self, query, update_query):
-        try:
-            print("Updating...")
-            self.collection.update_one(query, update_query)
-            print("Record updated")
-        except Exception as e:
-            print(e)
-            print("Error updating data in database")
+        self.db = MongoDB("timeKeeper")
 
     def close(self):
-        self.client.close()
+        self.db.close()
 
     #function to display data
     def displayData(self):
@@ -74,7 +20,7 @@ class TimeKeeper:
             }
         }
         try:
-            timekeeper_records = list(self.get(query))
+            timekeeper_records = list(self.db.get(query))
         except pymongo.errors.PyMongoError as e:
             print(f"MongoDB query failed: {e}")
         except Exception as e:
@@ -119,7 +65,7 @@ class TimeKeeper:
                     break
                 except ValueError:
                     print(ValueError)
-                    
+
             #loop through the number of inputs
             for i in range(int(inputNumber)):
 
@@ -165,7 +111,7 @@ class TimeKeeper:
                 }
                 #insert data into database
                 try:
-                    self.insert(data)
+                    self.db.insert(data)
                 except Exception as e:
                     print(e)
                     print("Error inserting data into database")
@@ -182,7 +128,7 @@ class TimeKeeper:
     def deleteData(self):
         #get data from user
         try:
-            existingData = list(self.get({}))
+            existingData = list(self.db.get({}))
         except Exception as e:
             print("Error retrieving data from database")
         if existingData:
@@ -196,7 +142,7 @@ class TimeKeeper:
                         print(ValueError)
                 query = {"_id": id}
                 try:
-                    self.delete(query)
+                    self.db.delete(query)
                 except pymongo.errors.PyMongoError as e:
                     print(f"Failed to delete document: {e}")
                 except Exception as e:
@@ -212,7 +158,7 @@ class TimeKeeper:
     
     def updateData(self):
         try:
-            existingData = list(self.get({}))
+            existingData = list(self.db.get({}))
         except Exception as e:
             print("Error retrieving data from database")
 
@@ -226,7 +172,7 @@ class TimeKeeper:
                     print(ValueError)
 
             idToUpdate = {"_id": id}
-            objectToUpdate = self.get_by_id(idToUpdate)
+            objectToUpdate = self.db.get_by_id(idToUpdate)
             keys = list(objectToUpdate.keys())
             for i in range(len(keys)):
                 print(f"{i+1} - {keys[i]}")
@@ -295,7 +241,7 @@ class TimeKeeper:
                         print("Invalid input try again.")
             
             try:
-                self.update(query, update_query)
+                self.db.update(query, update_query)
             except Exception as e:
                 print(e)
                 print("Error updating data in database")
@@ -308,7 +254,7 @@ class TimeKeeper:
     #function to filter data for a single date
     def filterData(self):
         try:
-            existingData = list(self.get({}))
+            existingData = list(self.db.get({}))
         except Exception as e:
             print("Error retrieving data from database")
         if existingData:
@@ -334,7 +280,7 @@ class TimeKeeper:
                 }
             }
             try:
-                filteredData = list(self.get(query))
+                filteredData = list(self.db.get(query))
             except Exception as e:
                 print(e)
                 print("Error retrieving data from database\n")
@@ -356,7 +302,7 @@ class TimeKeeper:
 
     def displayAllData(self):
         try:
-            existingData = list(self.get({}))
+            existingData = list(self.db.get({}))
         except Exception as e:
             print("Error retrieving data from database")
         if existingData:
@@ -375,7 +321,7 @@ class TimeKeeper:
 
     def displaySingleDate(self):
         try:
-            existingData = list(self.get({}))
+            existingData = list(self.db.get({}))
         except Exception as e:
             print("Error retrieving data from database")
         if existingData:
@@ -390,7 +336,7 @@ class TimeKeeper:
                 "date": parsed_date
             }
             try:
-                filteredData = list(self.get(query))
+                filteredData = list(self.db.get(query))
             except Exception as e:
                 print(e)
                 print("Error retrieving data from database\n")

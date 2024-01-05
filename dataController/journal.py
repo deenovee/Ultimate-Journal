@@ -1,85 +1,29 @@
+from mongo import MongoDB
 import datetime
 from datetime import timedelta
 import pymongo
-from pymongo import MongoClient
 from bson import ObjectId
 
 class Journal:
     def __init__(self):
-        try:
-            self.client = pymongo.MongoClient("mongodb://localhost:27017/")
-            self.db = self.client["MyDashboard"]
-            self.collection = self.db["journal"]
-        except pymongo.errors.ConnectionFailure as e:
-            print(f"Failed to connect to MongoDB: {e}")
-
-    def insert(self, data):
-        try:
-            self.collection.insert_one(data)
-        except pymongo.errors.PyMongoError as e:
-            print(f"Failed to insert document: {e}")
-
-    def get(self, query):
-        try:
-            return self.collection.find(query)
-        except pymongo.errors.PyMongoError as e:
-            print(f"MongoDB query failed: {e}")
-        except Exception as e:
-            print(f"An unexpected error occurred: {e}")
-
-    def get_by_id(self, id):
-        try:
-            return self.collection.find_one({"_id": ObjectId(id['_id'])})
-        except pymongo.errors.PyMongoError as e:
-            print(f"MongoDB query failed: {e}")
-        except Exception as e:
-            print(f"An unexpected error occurred: {e}")
-
-    def get_one(self):
-        date = datetime.datetime.now().replace(hour=0, minute=0, second=0, microsecond=0) - timedelta(days=1)
-        return self.collection.find_one({"date": {"$gte": date}}, sort=[("date", -1)])
-
-    def delete(self, data):
-        if "/" in data["_id"]:
-            try:
-                objectIds = data["_id"].split("/")
-                for i in objectIds:
-                    query = {"_id": ObjectId(i)}
-                    self.collection.delete_one(query)
-                    print("Record deleted")
-            except Exception as e:
-                print(e)
-                print("Error handling multpiple ids")
-                print("trying single id")
-        else:
-            query = {"_id": ObjectId(data["_id"])}
-            try:
-                self.collection.delete_one(query)
-                print("Record deleted")
-            except Exception as e:
-                print(e)
-                print("Error deleting data from database")
-
-    def update(self, query, update_query):
-        try:
-            print("Updating...")
-            self.collection.update_one(query, update_query)
-            print("Record updated")
-        except Exception as e:
-            print(e)
-            print("Error updating data in database")
+        self.db = MongoDB("journal")
 
     def close(self):
-        self.client.close()
+        self.db.close()
 
     def displayRecentJournal(self):
-        #display last entry
+        date = datetime.datetime.now().replace(hour=0, minute=0, second=0, microsecond=0) - timedelta(days=1)
+        query = {"date": date}
         try:
-            latest_entry = self.get_one()
+            latest_entry = list(self.db.get(query))
             if latest_entry:
-                print(f"Record:\n _id = {latest_entry['_id']}\ndate = {latest_entry['date']}\nJOURNAL\n{latest_entry['journal']}")
+                for entry in latest_entry:
+                    print("")
+                    print(f"Record:\n _id = {entry['_id']}\ndate = {entry['date']}\nJOURNAL\n{entry['journal']}")
+                    print("")
             else:
                 print("No data to display")
+    
         except Exception as e:
             print(e)
             print("Error retrieving data from database")
@@ -148,7 +92,7 @@ class Journal:
         }
         #insert data into database
         try:
-            self.insert(dataDict)
+            self.db.insert(dataDict)
         except Exception as e:
             print(e)
             print("Error inserting data into database")
@@ -158,7 +102,7 @@ class Journal:
     def deleteData(self):
         #get data from user
         try:
-            existingData = list(self.get({}))
+            existingData = list(self.db.get({}))
         except Exception as e:
             print("Error retrieving data from database")
         if existingData:
@@ -170,7 +114,7 @@ class Journal:
             objectToDelete = {"_id": objectId}
             #delete data from database
             try:
-                self.delete(objectToDelete)
+                self.db.delete(objectToDelete)
             except Exception as e:
                 print(e)
                 print("Error deleting data from database")
@@ -182,7 +126,7 @@ class Journal:
 
     def updateData(self):
         try:
-            existingData = list(self.get({}))
+            existingData = list(self.db.get({}))
         except Exception as e:
             print("Error retrieving data from database")
 
@@ -196,7 +140,7 @@ class Journal:
                     print(ValueError)
 
             idToUpdate = {"_id": id}
-            objectToUpdate = self.get_by_id(idToUpdate)
+            objectToUpdate = self.db.get_by_id(idToUpdate)
             keys = list(objectToUpdate.keys())
             for i in range(len(keys)):
                 print(f"{i+1} - {keys[i]}")
@@ -235,7 +179,7 @@ class Journal:
                         print("Invalid input try again.")
             
             try:
-                self.update(query, update_query)
+                self.db.update(query, update_query)
             except Exception as e:
                 print(e)
                 print("Error updating data in database")
@@ -247,7 +191,7 @@ class Journal:
 
     def filterData(self):
         try:
-            existingData = list(self.get({}))
+            existingData = list(self.db.get({}))
         except Exception as e:
             print("Error retrieving data from database")
 
@@ -274,7 +218,7 @@ class Journal:
                 }
             }
             try:
-                filteredData = list(self.get(query))
+                filteredData = list(self.db.get(query))
             except Exception as e:
                 print(e)
                 print("Error retrieving data from database\n")
@@ -296,7 +240,7 @@ class Journal:
 
     def displayAllData(self):
         try:
-            existingData = list(self.get({}))
+            existingData = list(self.db.get({}))
         except Exception as e:
             print("Error retrieving data from database")
         if existingData:
@@ -313,7 +257,7 @@ class Journal:
 
     def displaySingleDate(self):
         try:
-            existingData = list(self.get({}))
+            existingData = list(self.db.get({}))
         except Exception as e:
             print("Error retrieving data from database")
         if existingData:
@@ -328,7 +272,7 @@ class Journal:
                 "date": parsed_date
             }
             try:
-                filteredData = list(self.get(query))
+                filteredData = list(self.db.get(query))
             except Exception as e:
                 print(e)
                 print("Error retrieving data from database\n")
