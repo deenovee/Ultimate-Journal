@@ -1,4 +1,9 @@
-from mongo import MongoDB
+from functions.mongo import MongoDB
+from functions.delete import Delete
+from functions.display import Display
+from functions.filter import Filter
+from functions.display_all import DisplayAll
+from functions.display_date import DisplayDate
 import datetime
 from datetime import date, timedelta
 from bson import ObjectId
@@ -6,38 +11,49 @@ from bson import ObjectId
 class Nutrition:
     def __init__(self):
         self.db = MongoDB("nutrition")
+        self.delete = Delete("nutrition")
+        self.display = Display("nutrition")
+        self.filter = Filter("nutrition")
+        self.display_all = DisplayAll("nutrition")
+        self.display_date = DisplayDate("nutrition")
     
     def close(self):
         self.db.close()
 
     def displayData(self):
-        start_date = datetime.datetime.now().replace(hour=0, minute=0, second=0, microsecond=0) - timedelta(days=8)
-        # Define the query to filter records within the date range
-        query = {
-            "date": {
-                "$gte": start_date,
-            }
-        }
         try:
-            nutrition_records = list(self.db.get(query))
-        except pymongo.errors.PyMongoError as e:
-            print(f"MongoDB query failed: {e}")
+            self.display.display()
         except Exception as e:
-            print(f"An unexpected error occurred: {e}")
-        
-        if nutrition_records == []:
-            print("No nutrition data for the past week")
-        else:
-            print("Nutrition Weekly Overview \n")
-            for index, i in enumerate(nutrition_records):
-                j = index + 1
-                if j == len(nutrition_records):
-                    print("")
-                    print(f"Record {j}:\n _id = {i['_id']}\ndate = {i['date']}\nCalories = {i['calories']}\nProtein = {i['protein']}\nFat = {i['fat']}\nCarbs = {i['carbs']}\nWater = {i['water']}\nAlcohol = {i['alcohol']}\nFood Type = {i['food_type']}")
-                    print("")
-                else:
-                    print("")
-                    print(f"Record {j}:\n _id = {i['_id']}\ndate = {i['date']}\nCalories = {i['calories']}\nProtein = {i['protein']}\nFat = {i['fat']}\nCarbs = {i['carbs']}\nWater = {i['water']}\nAlcohol = {i['alcohol']}\nFood Type = {i['food_type']}")
+            print(e)
+            print("Error displaying data")
+
+    def filterData(self):
+        try:
+            self.filter.filter()    
+        except Exception as e:
+            print(e)
+            print("Error filtering data")
+
+    def displayAllData(self):
+        try:
+            self.display_all.display_all()
+        except Exception as e:
+            print(e)
+            print("Error displaying all data")
+
+    def displaySingleDate(self):
+        try:
+            self.display_date.display_date()
+        except Exception as e:
+            print(e)
+            print("Error displaying single date")
+
+    def deleteData(self):
+        try:
+            self.delete.delete()
+        except Exception as e:
+            print(e)
+            print("Error deleting data")
 
     def collectData(self):
         try:
@@ -149,37 +165,6 @@ class Nutrition:
         
         self.displayData()
 
-    def deleteData(self):
-        try:
-            existingData = list(self.db.get({}))
-        except Exception as e:
-            print("Error retrieving data from database")
-        if existingData:
-            try:
-                while True:
-                    id = input("Enter Object ID to delete or list of IDs separated by /: ")
-                    try:
-                        id = str(id)
-                        break
-                    except ValueError:
-                        print(ValueError)
-                query = {"_id": id}
-                try:
-                    self.db.delete(query)
-                    print("Exercise data deleted successfully")
-                except pymongo.errors.PyMongoError as e:
-                    print(f"Failed to delete document: {e}")
-                except Exception as e:
-                    print(f"An error occurred: {e}")
-            except KeyboardInterrupt:
-                print("")
-                print("Exiting...")
-                print("")
-            self.displayData()
-        else:
-            print("No data to delete")
-            print("Exiting...\n")
-
     def updateData(self):
         try:
             existingData = list(self.db.get({}))
@@ -249,106 +234,3 @@ class Nutrition:
         else:
             print("No data to update")
             print("Exiting...\n")
-
-    def filterData(self):
-        try:
-            existingData = list(self.db.get({}))
-        except Exception as e:
-            print("Error retrieving data from database")
-            
-        if existingData:
-            while True:
-                try:
-                    date_start = input("Enter start date (MM/DD/YY): ")
-                    parsed_start_date = datetime.datetime.strptime(date_start, "%m/%d/%y")
-                    break
-                except ValueError:
-                    print("Incorrect data format, should be MM/DD/YY")
-            while True:
-                try:
-                    date_end = input("Enter end date (MM/DD/YY): ")
-                    parsed_end_date = datetime.datetime.strptime(date_end, "%m/%d/%y")
-                    break
-                except ValueError:
-                    print("Incorrect data format, should be MM/DD/YY")
-
-            query = {
-                "date": {
-                    "$gte": parsed_start_date,
-                    "$lte": parsed_end_date
-                }
-            }
-            try:
-                filteredData = list(self.db.get(query))
-            except Exception as e:
-                print(e)
-                print("Error retrieving data from database\n")
-
-            if filteredData:
-                for index, i in enumerate(filteredData):
-                    j = index + 1
-                    if j == len(filteredData):
-                        print("")
-                        print(f"Record {index + 1}:\n _id = {i['_id']}\ndate = {i['date']}\nCalories = {i['calories']}\nProtein = {i['protein']}\nFat = {i['fat']}\nCarbs = {i['carbs']}\nWater = {i['water']}\nAlcohol = {i['alcohol']}\nFood Type = {i['food_type']}")
-                        print("")
-                    else:
-                        print("")
-                        print(f"Record {index + 1}:\n _id = {i['_id']}\ndate = {i['date']}\nCalories = {i['calories']}\nProtein = {i['protein']}\nFat = {i['fat']}\nCarbs = {i['carbs']}\nWater = {i['water']}\nAlcohol = {i['alcohol']}\nFood Type = {i['food_type']}")
-            else:
-                print("No data found for that date range")
-        else:
-            print("No data to filter")
-            print("Exiting...\n")
-
-    def displayAllData(self):
-        try:
-            existingData = list(self.db.get({}))
-        except Exception as e:
-            print("Error retrieving data from database")
-        if existingData:
-            for index, i in enumerate(existingData):
-                j = index + 1
-                if j == len(existingData):
-                    print("")
-                    print(f"Record {index + 1}:\n _id = {i['_id']}\ndate = {i['date']}\nCalories = {i['calories']}\nProtein = {i['protein']}\nFat = {i['fat']}\nCarbs = {i['carbs']}\nWater = {i['water']}\nAlcohol = {i['alcohol']}\nFood Type = {i['food_type']}")
-                    print("")
-                else:
-                    print("")
-                    print(f"Record {index + 1}:\n _id = {i['_id']}\ndate = {i['date']}\nCalories = {i['calories']}\nProtein = {i['protein']}\nFat = {i['fat']}\nCarbs = {i['carbs']}\nWater = {i['water']}\nAlcohol = {i['alcohol']}\nFood Type = {i['food_type']}")
-        else:
-            print("No data to display")
-            print("Exiting...\n")
-
-    def displaySingleDate(self):
-        try:
-            existingData = list(self.db.get({}))
-        except Exception as e:
-            print("Error retrieving data from database")
-        if existingData:
-            while True:
-                try:
-                    date = input("Enter date (MM/DD/YY): ")
-                    parsed_date = datetime.datetime.strptime(date, "%m/%d/%y")
-                    break
-                except ValueError:
-                    print("Incorrect data format, should be MM/DD/YY")
-            query = {
-                "date": parsed_date
-            }
-            try:
-                filteredData = list(self.db.get(query))
-            except Exception as e:
-                print(e)
-                print("Error retrieving data from database\n")
-            if filteredData:
-                for index, i in enumerate(filteredData):
-                    j = index + 1 
-                    if j == len(filteredData):
-                        print("")
-                        print(f"Record {index + 1}:\n _id = {i['_id']}\ndate = {i['date']}\nCalories = {i['calories']}\nProtein = {i['protein']}\nFat = {i['fat']}\nCarbs = {i['carbs']}\nWater = {i['water']}\nAlcohol = {i['alcohol']}\nFood Type = {i['food_type']}")
-                        print("")
-                    else:
-                        print("")
-                        print(f"Record {index + 1}:\n _id = {i['_id']}\ndate = {i['date']}\nCalories = {i['calories']}\nProtein = {i['protein']}\nFat = {i['fat']}\nCarbs = {i['carbs']}\nWater = {i['water']}\nAlcohol = {i['alcohol']}\nFood Type = {i['food_type']}")
-            else:
-                print("No data to display")

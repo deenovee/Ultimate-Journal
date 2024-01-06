@@ -1,4 +1,9 @@
-from mongo import MongoDB
+from functions.mongo import MongoDB
+from functions.delete import Delete
+from functions.display import Display
+from functions.filter import Filter
+from functions.display_all import DisplayAll
+from functions.display_date import DisplayDate
 import datetime
 from datetime import date, timedelta
 from bson import ObjectId
@@ -6,58 +11,64 @@ from bson import ObjectId
 class TimeKeeper:
     def __init__(self):
         self.db = MongoDB("timeKeeper")
+        self.delete = Delete("timeKeeper")
+        self.display = Display("timeKeeper")
+        self.filter = Filter("timeKeeper")
+        self.display_all = DisplayAll("timeKeeper")
+        self.display_date = DisplayDate("timeKeeper")
 
     def close(self):
         self.db.close()
 
     #function to display data
     def displayData(self):
-        start_date = datetime.datetime.now().replace(hour=0, minute=0, second=0, microsecond=0) - timedelta(5)
-        
-        query = {
-            "date": {
-                    "$gte": start_date
-            }
-        }
         try:
-            timekeeper_records = list(self.db.get(query))
-        except pymongo.errors.PyMongoError as e:
-            print(f"MongoDB query failed: {e}")
+            self.display.display()
         except Exception as e:
-            print(f"An unexpected error occurred: {e}")
+            print(e)
+            print("Error displaying data")
 
-        # check if there are 25 or fewer data objects
-        if len(timekeeper_records) == []:
-            print("No timekeeper data to display")
-        else:
-            for index, i in enumerate(timekeeper_records):
-                j = index + 1
-                if j == len(timekeeper_records):
-                    print("")
-                    print(f"Record {index + 1}:\n _id = {i['_id']}\n date = {i['date']}\n time = {i['time']}\n description = {i['description']}\n category = {i['category']}\n")
-                    print("")
-                else:
-                    print("")
-                    print(f"Record {index + 1}:\n _id = {i['_id']}\n date = {i['date']}\n time = {i['time']}\n description = {i['description']}\n category = {i['category']}\n")
+    def filterData(self):
+        try:
+            self.filter.filter()
+        except Exception as e:
+            print(e)
+            print("Error filtering data")
 
-    #function to collect data from user
+    def displayAllData(self):
+        try:
+            self.display_all.display_all()
+        except Exception as e:
+            print(e)
+            print("Error displaying all data")
+
+    def displaySingleDate(self):
+        try:
+            self.display_date.display_date()
+        except Exception as e:
+            print(e)
+            print("Error displaying single date")
+
+    def deleteData(self):
+        try:
+            self.delete.delete()
+        except Exception as e:
+            print(e)
+            print("Error deleting data from database")
+
     def collectData(self):
         try:
-            #get data from user
             while True:
                 inputNumber = input("Enter number of inputs: ")
-
                 try:
-                    # Attempt to convert the input to an integer
                     inputNumber = int(inputNumber)
-
-                    # Check if the entered number is a digit and within the range 1-10
                     if 1 <= inputNumber <= 10:
                         break
                     else:
                         print("Invalid input. Please enter a number between 1 and 10.")
                 except ValueError:
                     print("Invalid input. Please enter a valid number.")
+            
             while True:
                 date = input("Enter date (MM/DD/YY): ")
                 try:
@@ -66,10 +77,7 @@ class TimeKeeper:
                 except ValueError:
                     print(ValueError)
 
-            #loop through the number of inputs
             for i in range(int(inputNumber)):
-
-                #validate minutes input
                 while True:
                     inputTime = input("Enter time in minutes: ")
                     try:
@@ -77,7 +85,6 @@ class TimeKeeper:
                         break
                     except ValueError:
                         print("Invalid input")
-            #validate description input
                 while True:
                     inputDescription = input("Enter description: ")
                     try:
@@ -102,14 +109,12 @@ class TimeKeeper:
                             print("Invalid input")
                     except ValueError:
                         print("Please add a category")
-                #create a dictionary to store data
                 data = {
                     "date": date,
                     "time": inputTime,
                     "description": inputDescription,
                     "category": categoryChoice
                 }
-                #insert data into database
                 try:
                     self.db.insert(data)
                 except Exception as e:
@@ -123,38 +128,6 @@ class TimeKeeper:
             print("Error handling data input")
             
         self.displayData()
-
-    #function to delete data
-    def deleteData(self):
-        #get data from user
-        try:
-            existingData = list(self.db.get({}))
-        except Exception as e:
-            print("Error retrieving data from database")
-        if existingData:
-            try:
-                while True:
-                    id = input("Enter Object ID to delete or list of IDs separated by /: ")
-                    try:
-                        id = str(id)
-                        break
-                    except ValueError:
-                        print(ValueError)
-                query = {"_id": id}
-                try:
-                    self.db.delete(query)
-                except pymongo.errors.PyMongoError as e:
-                    print(f"Failed to delete document: {e}")
-                except Exception as e:
-                    print(f"An error occurred: {e}")
-            except KeyboardInterrupt:
-                print("")
-                print("Exiting...")
-                print("")
-            self.displayData()
-        else:
-            print("No data to delete")
-            print("Exiting...")
     
     def updateData(self):
         try:
@@ -250,105 +223,3 @@ class TimeKeeper:
         else:
             print("No data to update")
             print("Exiting...")
-
-    #function to filter data for a single date
-    def filterData(self):
-        try:
-            existingData = list(self.db.get({}))
-        except Exception as e:
-            print("Error retrieving data from database")
-        if existingData:
-            while True:
-                try:
-                    date_start = input("Enter start date (MM/DD/YY): ")
-                    parsed_start_date = datetime.datetime.strptime(date_start, "%m/%d/%y")
-                    break
-                except ValueError:
-                    print("Incorrect data format, should be MM/DD/YY")
-            while True:
-                try:
-                    date_end = input("Enter end date (MM/DD/YY): ")
-                    parsed_end_date = datetime.datetime.strptime(date_end, "%m/%d/%y")
-                    break
-                except ValueError:
-                    print("Incorrect data format, should be MM/DD/YY")
-
-            query = {
-                "date": {
-                    "$gte": parsed_start_date,
-                    "$lte": parsed_end_date
-                }
-            }
-            try:
-                filteredData = list(self.db.get(query))
-            except Exception as e:
-                print(e)
-                print("Error retrieving data from database\n")
-            if filteredData:
-                for index, i in enumerate(filteredData):
-                    j = index + 1 
-                    if j == len(filteredData):
-                        print("")
-                        print(f"Record {index + 1}:\n _id = {i['_id']}\n date = {i['date']}\n time = {i['time']}\n description = {i['description']}\n category = {i['category']}\n")
-                        print("")
-                    else:
-                        print("")
-                        print(f"Record {index + 1}:\n _id = {i['_id']}\n date = {i['date']}\n time = {i['time']}\n description = {i['description']}\n category = {i['category']}\n")
-            else:
-                print("No data for that date range")
-        else:
-            print("No data to filter")
-            print("Exiting...")
-
-    def displayAllData(self):
-        try:
-            existingData = list(self.db.get({}))
-        except Exception as e:
-            print("Error retrieving data from database")
-        if existingData:
-            for index, i in enumerate(existingData):
-                j = index + 1
-                if j == len(existingData):
-                    print("")
-                    print(f"Record {index + 1}:\n _id = {i['_id']}\n date = {i['date']}\n time = {i['time']}\n description = {i['description']}\n category = {i['category']}\n")
-                    print("")
-                else:
-                    print("")
-                    print(f"Record {index + 1}:\n _id = {i['_id']}\n date = {i['date']}\n time = {i['time']}\n description = {i['description']}\n category = {i['category']}\n")
-        else:
-            print("No data to display")
-            print("Exiting...\n")
-
-    def displaySingleDate(self):
-        try:
-            existingData = list(self.db.get({}))
-        except Exception as e:
-            print("Error retrieving data from database")
-        if existingData:
-            while True:
-                try:
-                    date = input("Enter date (MM/DD/YY): ")
-                    parsed_date = datetime.datetime.strptime(date, "%m/%d/%y")
-                    break
-                except ValueError:
-                    print("Incorrect data format, should be MM/DD/YY")
-            query = {
-                "date": parsed_date
-            }
-            try:
-                filteredData = list(self.db.get(query))
-            except Exception as e:
-                print(e)
-                print("Error retrieving data from database\n")
-            if filteredData:
-                for index, i in enumerate(filteredData):
-                    j = index + 1 
-                    if j == len(filteredData):
-                        print("")
-                        print(f"Record {index + 1}:\n _id = {i['_id']}\n date = {i['date']}\n time = {i['time']}\n description = {i['description']}\n category = {i['category']}\n")
-                        print("")
-                    else:
-                        print("")
-                        print(f"Record {index + 1}:\n _id = {i['_id']}\n date = {i['date']}\n time = {i['time']}\n description = {i['description']}\n category = {i['category']}\n")
-            else:
-                print("No data to display")
