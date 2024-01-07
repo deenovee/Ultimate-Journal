@@ -4,6 +4,8 @@ from functions.display import Display
 from functions.filter import Filter
 from functions.display_all import DisplayAll
 from functions.display_date import DisplayDate
+from functions.update import Update
+from functions.inputs import Inputs
 import datetime
 from datetime import date, timedelta
 from bson import ObjectId
@@ -16,11 +18,12 @@ class TimeKeeper:
         self.filter = Filter("timeKeeper")
         self.display_all = DisplayAll("timeKeeper")
         self.display_date = DisplayDate("timeKeeper")
+        self.update = Update("timeKeeper")
+        self.inputs = Inputs()
 
     def close(self):
         self.db.close()
 
-    #function to display data
     def displayData(self):
         try:
             self.display.display()
@@ -56,35 +59,24 @@ class TimeKeeper:
             print(e)
             print("Error deleting data from database")
 
+    def updateData(self):
+        try:
+            self.update.update()
+        except Exception as e:
+            print(e)
+            print("Error updating data")
+
     def collectData(self):
         try:
-            while True:
-                inputNumber = input("Enter number of inputs: ")
-                try:
-                    inputNumber = int(inputNumber)
-                    if 1 <= inputNumber <= 10:
-                        break
-                    else:
-                        print("Invalid input. Please enter a number between 1 and 10.")
-                except ValueError:
-                    print("Invalid input. Please enter a valid number.")
-            
-            while True:
-                date = input("Enter date (MM/DD/YY): ")
-                try:
-                    date = datetime.datetime.strptime(date, "%m/%d/%y").replace(hour=0, minute=0, second=0, microsecond=0)
-                    break
-                except ValueError:
-                    print(ValueError)
+            print("Enter number of inputs: ")
+            inputNumber = self.inputs.get_int()
+            print("Enter date below:")
+            date = self.inputs.get_date()
 
             for i in range(int(inputNumber)):
-                while True:
-                    inputTime = input("Enter time in minutes: ")
-                    try:
-                        inputTime = int(inputTime)
-                        break
-                    except ValueError:
-                        print("Invalid input")
+                print("Enter time in minutes: ")
+                inputTime = self.inputs.get_int()
+
                 while True:
                     inputDescription = input("Enter description: ")
                     try:
@@ -94,21 +86,10 @@ class TimeKeeper:
                             print("Invalid input")
                     except ValueError:
                         print("Please add a description")
-                while True:
-                    categoryList = ['HEALTH', 'WORK', 'PROJECT', 'EDUCATION', 'READING', 'HOBBY', 'NETWORKING', 'OTHER']
-                    for index, i in enumerate(categoryList):
-                        j = index + 1
-                        print(f"{j} - {i}")
-                    inputCategory = input("Enter category: ")
-                    try:
-                        inputCategory = int(inputCategory)
-                        if 1 <= inputCategory <= len(categoryList):
-                            categoryChoice = categoryList[inputCategory-1]
-                            break
-                        else:
-                            print("Invalid input")
-                    except ValueError:
-                        print("Please add a category")
+                
+                categoryList = ['HEALTH', 'WORK', 'PROJECT', 'EDUCATION', 'READING', 'HOBBY', 'NETWORKING', 'OTHER']
+                categoryChoice = self.inputs.get_list_choice(categoryList)
+                
                 data = {
                     "date": date,
                     "time": inputTime,
@@ -128,98 +109,3 @@ class TimeKeeper:
             print("Error handling data input")
             
         self.displayData()
-    
-    def updateData(self):
-        try:
-            existingData = list(self.db.get({}))
-        except Exception as e:
-            print("Error retrieving data from database")
-
-        if existingData:
-            while True:
-                id = input("Enter Object ID to update: ")
-                try:
-                    id = str(id)
-                    break
-                except ValueError:
-                    print(ValueError)
-
-            idToUpdate = {"_id": id}
-            objectToUpdate = self.db.get_by_id(idToUpdate)
-            keys = list(objectToUpdate.keys())
-            for i in range(len(keys)):
-                print(f"{i+1} - {keys[i]}")
-
-            while True:
-                try:
-                    userInput = input("Select the key to update: ")
-                    userInput = int(userInput)
-                    if 1 < userInput <= len(keys):
-                        selectedKey = keys[userInput-1]
-                        break
-                    elif userInput == 1:
-                        print("Cannot update Object ID")
-                    else:
-                        print("Invalid input.")
-                except ValueError:
-                    print("Invalid input try again.")
-
-            if userInput == 2:
-                while True:
-                    date = input("Enter new date (MM/DD/YY): ")
-                    try:
-                        date = datetime.datetime.strptime(date, "%m/%d/%y").replace(hour=0, minute=0, second=0, microsecond=0)
-                        query = {"_id": ObjectId(id)}
-                        update_query = {"$set": {f"{selectedKey}": date}}
-                        break
-                    except ValueError:
-                        print(ValueError)
-
-            elif userInput == 3:   
-                while True:
-                    time = input("Enter new time in minutes: ")
-                    try:
-                        time = int(time)
-                        query = {"_id": ObjectId(id)}
-                        update_query = {"$set": {f"{selectedKey}": time}}
-                        break
-                    except ValueError:
-                        print(ValueError)
-
-            elif userInput == 5:
-                categoryList = ['HEALTH', 'WORK', 'PROJECT', 'EDUCATION', 'READING', 'HOBBY', 'NETWORKING', 'OTHER']
-                for index, i in enumerate(categoryList):
-                    j = index + 1
-                    print(f"{j} - {i}")
-                while True:
-                    category = input("Enter new category: ")
-                    try:
-                        category = int(category)
-                        if 1 <= category <= len(categoryList):
-                            categoryChoice = categoryList[category-1]
-                            query = {"_id": ObjectId(id)}
-                            update_query = {"$set": {f"{selectedKey}": categoryChoice}}
-                            break
-                    except ValueError:
-                        print(ValueError)
-
-            else:  
-                while True:
-                    newValue = input("Enter new value: ")
-                    if newValue:
-                        query = {"_id": ObjectId(id)}
-                        update_query = {"$set": {f"{selectedKey}": newValue}}
-                        break
-                    else:
-                        print("Invalid input try again.")
-            
-            try:
-                self.db.update(query, update_query)
-            except Exception as e:
-                print(e)
-                print("Error updating data in database")
-
-            self.displayData()
-        else:
-            print("No data to update")
-            print("Exiting...")
