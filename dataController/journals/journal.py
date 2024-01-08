@@ -1,11 +1,11 @@
-from functions.mongo import MongoDB
-from functions.delete import Delete
-from functions.display import Display
-from functions.filter import Filter
-from functions.display_all import DisplayAll
-from functions.display_date import DisplayDate
-from functions.update import Update
-from functions.inputs import Inputs
+from dataController.functions.mongo import MongoDB
+from dataController.functions.delete import Delete
+from dataController.functions.display import Display
+from dataController.functions.filter import Filter
+from dataController.functions.display_all import DisplayAll
+from dataController.functions.display_date import DisplayDate
+from dataController.functions.update import Update
+from dataController.functions.inputs import Inputs
 import datetime
 from datetime import timedelta
 import pymongo

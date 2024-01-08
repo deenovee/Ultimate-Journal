@@ -1,5 +1,5 @@
-from .mongo import MongoDB
-from .display import Display
+from dataController.functions.mongo import MongoDB
+from dataController.functions.display import Display
 from bson import ObjectId
 
 class Delete:

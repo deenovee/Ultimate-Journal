@@ -1,4 +1,4 @@
-from .mongo import MongoDB
+from dataController.functions.mongo import MongoDB
 from bson import ObjectId
 import datetime
 from datetime import date, timedelta
@@ -36,19 +36,37 @@ class DisplayDate:
                 print(e)
                 print("Error retrieving data from database\n")
             if filteredData:
-                keys = list(filteredData[0].keys())
-                for index, i in enumerate(filteredData):
-                    j = index + 1 
-                    output = f"Record {j}: \n"
-                    for key in keys:
-                        output += f"{key}: {i[key]}\n"
-                    if j == len(filteredData):
-                        print("")
-                        print(output)
-                        print("")
-                    else:
-                        print("")
-                        print(output)
+                if self.collection == "timeKeeper":
+                    keys = list(filteredData[0].keys())
+                    total_time = 0
+                    for index, i in enumerate(filteredData):
+                        total_time += i["time"]
+                        j = index + 1 
+                        output = f"Record {j}: \n"
+                        for key in keys:
+                            output += f"{key}: {i[key]}\n"
+                        if j == len(filteredData):
+                            print("")
+                            print(output)
+                            print("")
+                        else:
+                            print("")
+                            print(output)
+                    print(f"Total time: {round(total_time / 60, 2)} hours")
+                else:
+                    keys = filteredData[0].keys()
+                    for index, i in enumerate(filteredData):
+                        j = index + 1
+                        output = f"Record {j}: \n"
+                        for key in keys:
+                            output += f"{key}: {i[key]}\n"
+                        if j == len(filteredData):
+                            print("")
+                            print(output)
+                            print("")
+                        else:
+                            print("")
+                            print(output)
             else:
                 print("No data to display for that date")
         else:

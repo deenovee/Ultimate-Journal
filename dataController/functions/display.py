@@ -1,4 +1,4 @@
-from .mongo import MongoDB
+from dataController.functions.mongo import MongoDB
 from bson import ObjectId
 import datetime
 from datetime import date, timedelta

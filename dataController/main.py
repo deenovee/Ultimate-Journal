@@ -1,6 +1,6 @@
-from timeKeeper import TimeKeeper
-from journal import Journal
-from health import Health
+from dataController.journals.timeKeeper import TimeKeeper
+from dataController.journals.journal import Journal
+from dataController.health import Health
 from colorama import Style, Fore
 
 #instantiate TimeKeeper class

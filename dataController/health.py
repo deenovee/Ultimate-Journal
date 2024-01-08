@@ -1,7 +1,6 @@
-from nutrition import Nutrition
-from exercise import Exercise
-from sleep import Sleep
-
+from dataController.journals.nutrition import Nutrition
+from dataController.journals.exercise import Exercise
+from dataController.journals.sleep import Sleep
 
 class Health:
     def __init__(self):

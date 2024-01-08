@@ -1,5 +1,5 @@
-from .mongo import MongoDB
-from .display import Display
+from dataController.functions.mongo import MongoDB
+from dataController.functions.display import Display
 from bson import ObjectId
 import datetime
 from datetime import date, timedelta
@@ -98,12 +98,26 @@ class Update:
                 except Exception as e:
                     print(f"An unexpected error occurred: {e}")
 
-            elif selectedKey == "calories" or selectedKey == "protein" or selectedKey == "carbs" or selectedKey == "fat" or selectedKey == "hours" or selectedKey == "quality" or selectedKey == "rating" or selectedKey == "duration" or selectedKey == "effort" or selectedKey == "reps" or selectedKey == "weight" or selectedKey == "distance" or selectedKey == "time":
+            elif selectedKey == "distance" or selectedKey == "weight":
                 while True:
                     newValue = input("Enter new value: ")
                     if newValue:
                         try:
                             newValue = float(newValue)
+                            query = {"_id": ObjectId(id)}
+                            update_query = {"$set": {f"{selectedKey}": newValue}}
+                            break
+                        except ValueError:
+                            print("Invalid input, try again.")
+                    else:
+                        print("Invalid input, try again.")
+
+            elif selectedKey == "calories" or selectedKey == "protein" or selectedKey == "carbs" or selectedKey == "fat" or selectedKey == "quality" or selectedKey == "rating" or selectedKey == "duration" or selectedKey == "effort" or selectedKey == "reps" or selectedKey == "time":
+                while True:
+                    newValue = input("Enter new value: ")
+                    if newValue:
+                        try:
+                            newValue = int(newValue)
                             query = {"_id": ObjectId(id)}
                             update_query = {"$set": {f"{selectedKey}": newValue}}
                             break
