@@ -12,6 +12,8 @@ import pymongo
 from bson import ObjectId
 
 class Journal:
+    __name__ = "Journal"
+
     def __init__(self):
         self.db = MongoDB("journal")
         self.delete = Delete("journal")
@@ -25,7 +27,7 @@ class Journal:
     def close(self):
         self.db.close()
 
-    def displayRecentJournal(self):
+    def displayData(self):
         try:
             self.display.display()
         except Exception as e:
@@ -125,6 +127,6 @@ class Journal:
             print(e)
             print("Error inserting data into database")
         
-        self.displayRecentJournal()
+        self.displayData()
 
 

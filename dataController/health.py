@@ -1,78 +1,63 @@
-from dataController.journals.nutrition import Nutrition
-from dataController.journals.exercise import Exercise
-from dataController.journals.sleep import Sleep
-
 class Health:
-    def __init__(self):
-        self.sleep = Sleep()
-        self.exercise = Exercise()
-        self.nutrition = Nutrition()
+    def displayData(self, choice):
+        if choice == "1":
+            choice.displayData()
+        elif choice == "2":
+            choice.displayData()
+        elif choice == "3":
+            choice.displayData()
 
-    def sleep_dash(self):
-        self.sleep.displayData()
+    def collectData(self, choice):
+        if choice == "1":
+            choice.collectData()
+        elif choice == "2":
+            choice.collectData()
+        elif choice == "3":
+            choice.collectData()
 
-    def exercise_dash(self):
-        self.exercise.displayData()
-
-    def nutrition_dash(self):
-        self.nutrition.displayData()
-
-    #Sleep functions
-    def insert_sleep_doc(self):
-        self.sleep.collectData()
+    def deleteData(self, choice):
+        if choice == "1":
+            choice.deleteData()
+        elif choice == "2":
+            choice.deleteData()
+        elif choice == "3":
+            choice.deleteData()
     
-    def delete_sleep_doc(self):
-        self.sleep.deleteData()
+    def updateData(self, choice):
+        if choice == "1":
+            choice.updateData()
+        elif choice == "2":
+            choice.updateData()
+        elif choice == "3":
+            choice.updateData()
     
-    def update_sleep_doc(self):
-        self.sleep.updateData()
+    def filterData(self, choice):
+        if choice == "1":
+            choice.filterData()
+        elif choice == "2":
+            choice.filterData()
+        elif choice == "3":
+            choice.filterData()
     
-    def filter_sleep_data(self):
-        self.sleep.filterData()
-    
-    def display_all_sleep_data(self):
-        self.sleep.displayAllData()
+    def displayAllData(self, choice):
+        if choice == "1":
+            choice.displayAllData()
+        elif choice == "2":
+            choice.displayAllData()
+        elif choice == "3":
+            choice.displayAllData()
 
-    def display_single_sleep_data(self):
-        self.sleep.displaySingleDate()
+    def displaySingleDate(self, choice):
+        if choice == "1":
+            choice.displaySingleDate()
+        elif choice == "2":
+            choice.displaySingleDate()
+        elif choice == "3":
+            choice.displaySingleDate()
 
-    #Exercise functions
-    def insert_exercise_doc(self):
-        self.exercise.collectData()
 
-    def delete_exercise_doc(self):
-        self.exercise.deleteData()
-
-    def update_exercise_doc(self):
-        self.exercise.updateData()
     
-    def filter_exercise_data(self):
-        self.exercise.filterData()
-    
-    def display_all_exercise_data(self):
-        self.exercise.displayAllData()
-    
-    def display_single_exercise_data(self):
-        self.exercise.displaySingleDate()
-    
-    #Nutrition functions
-    def insert_nutrition_doc(self):
-        self.nutrition.collectData()
-
-    def delete_nutrition_doc(self):
-        self.nutrition.deleteData()
-
-    def update_nutrition_doc(self):
-        self.nutrition.updateData()
-    
-    def filter_nutrition_data(self):
-        self.nutrition.filterData()
-
-    def display_all_nutrition_data(self):
-        self.nutrition.displayAllData()
-    
-    def display_single_nutrition_data(self):
-        self.nutrition.displaySingleDate()
+ 
 
     
 

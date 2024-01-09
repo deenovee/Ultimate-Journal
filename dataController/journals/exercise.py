@@ -11,6 +11,8 @@ from datetime import date, timedelta
 from bson import ObjectId
 
 class Exercise:
+    __name__ = "Exercise"
+
     def __init__(self):
         self.db = MongoDB("exercise")
         self.delete = Delete("exercise")

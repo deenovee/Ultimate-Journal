@@ -11,6 +11,8 @@ from datetime import date, timedelta
 from bson import ObjectId
 
 class TimeKeeper:
+    __name__ = "TimeKeeper"
+    
     def __init__(self):
         self.db = MongoDB("timeKeeper")
         self.delete = Delete("timeKeeper")

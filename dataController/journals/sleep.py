@@ -12,6 +12,8 @@ from datetime import date, timedelta
 from bson import ObjectId
 
 class Sleep:
+    __name__ = "Sleep"
+
     def __init__(self):
         self.db = MongoDB("sleep")
         self.delete = Delete("sleep")
