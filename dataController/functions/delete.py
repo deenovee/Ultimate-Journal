@@ -13,6 +13,7 @@ class Delete:
             existingData = list(self.db.get({}))
         except Exception as e:
             print("Error retrieving data from database")
+
         if existingData:
             try:
                 while True:
@@ -22,13 +23,25 @@ class Delete:
                         break
                     except ValueError:
                         print(ValueError)
-                query = {"_id": id}
-                try:
-                    self.db.delete(query)
-                except pymongo.errors.PyMongoError as e:
-                    print(f"Failed to delete document: {e}")
-                except Exception as e:
-                    print(f"An error occurred: {e}")
+                if "/" in id:
+                    id_list = id.split("/")
+                    for i in id_list:
+                        query = {"_id": i}
+                        try:
+                            self.db.delete(query)
+                        except pymongo.errors.PyMongoError as e:
+                            print(f"Failed to delete docuament: {e}")
+                        except Exception as e:
+                            print(f"An unexpected error occured: {e}")
+                else:
+                    query = {"_id": id}
+                    try:
+                        self.db.delete(query)
+                    except pymongo.errors.PyMongoError as e:
+                        print(f"Failed to delete document: {e}")
+                    except Exception as e:
+                        print(f"An error occurred: {e}")
+                        
             except KeyboardInterrupt:
                 print("")
                 print("Exiting...")
