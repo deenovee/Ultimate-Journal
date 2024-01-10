@@ -3,15 +3,14 @@ from dataController.journals.journal import Journal
 from dataController.journals.nutrition import Nutrition
 from dataController.journals.exercise import Exercise
 from dataController.journals.sleep import Sleep
-from dataController.health import Health
 from colorama import Style, Fore
 
 timeKeeper = TimeKeeper()
 journal = Journal()
-health = Health()
 sleep = Sleep()
 exercise = Exercise()
 nutrition = Nutrition()
+
 
 def process_data(data_class):
     print(f"{data_class.__name__} selected...")
