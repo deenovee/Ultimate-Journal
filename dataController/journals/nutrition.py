@@ -108,7 +108,6 @@ class Nutrition:
                     "alcohol": alcohol,
                     "food_type": food_type_choice
                 }
-                print(data)
                 try:
                     self.db.insert(data)
                     print("Record inserted")
