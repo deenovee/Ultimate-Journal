@@ -101,7 +101,7 @@ class TimeKeeper:
         fig1 = px.bar(running_data, x=running_data['date'], y='distance', title='Average Distance for Running', color_discrete_sequence=[color])
         fig1.update_layout(showlegend=False)
 
-        fig2 = px.bar(stretching_data, x=stretching_data['date'], y='duration', title='Average Distance for Stretching', color_discrete_sequence=[color])
+        fig2 = px.bar(stretching_data, x=stretching_data['date'], y='duration', title='Average Duration of Stretching', color_discrete_sequence=[color])
         fig2.update_layout(showlegend=False)
 
         fig3 = px.bar(circuit_data, x=circuit_data['date'], y='duration', title='Duration for Circuit Exercises', color_discrete_sequence=[color])
@@ -110,7 +110,26 @@ class TimeKeeper:
         fig4 = px.bar(df, x=df['date'], y='duration', color='exercise_type', barmode='stack', title='Stacked Time Working Out for Each Date', color_discrete_sequence=px.colors.sequential.Turbo)
         fig4.update_layout(showlegend=True)
 
-
+        fig1.update_layout(
+            plot_bgcolor='rgba(30, 30, 30, 0.4)',
+            paper_bgcolor='rgba(30, 30, 30, 0.4)',
+            font_color='rgba(255, 255, 255, 0.9)'
+        )
+        fig2.update_layout(
+            plot_bgcolor='rgba(30, 30, 30, 0.4)',
+            paper_bgcolor='rgba(30, 30, 30, 0.4)',
+            font_color='rgba(255, 255, 255, 0.9)'
+        )
+        fig3.update_layout(
+            plot_bgcolor='rgba(30, 30, 30, 0.4)',
+            paper_bgcolor='rgba(30, 30, 30, 0.4)',
+            font_color='rgba(255, 255, 255, 0.9)'
+        )
+        fig4.update_layout(
+            plot_bgcolor='rgba(30, 30, 30, 0.4)',
+            paper_bgcolor='rgba(30, 30, 30, 0.4)',
+            font_color='rgba(255, 255, 255, 0.9)'
+        )
         return fig1, fig2, fig3, fig4
         
 

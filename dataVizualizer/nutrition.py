@@ -69,7 +69,7 @@ class Nutrition:
                         id='Daily Activity Bar Graph',
                         style={'width': '100%', 'float': 'left', 'margin': '0', 'color': 'rgba(255, 255, 255, 0.9)'}
                     )])
-                ])
+                ], style={'width': '100%', 'height': '100%', 'backgroundColor': 'rgba(30, 30, 30, 0.9)', 'margin': '0'}, id='main_div')
 
 
     def update_graph(self, option_slctd):
@@ -87,7 +87,9 @@ class Nutrition:
         water = water.dropna()
         avg_water_intake = water.mean()
 
-        fig1 = px.bar(df, x="date", y="water", color='water', title="Water Intake Per Day", color_continuous_scale=px.colors.sequential.Turbo)
+        color = px.colors.sequential.Turbo[3]
+
+        fig1 = px.bar(df, x="date", y="water", title="Water Intake Per Day", color_discrete_sequence=[color])
 
         fig1.add_shape(
             type='line',
@@ -100,8 +102,8 @@ class Nutrition:
         )
 
         fig1.update_layout(
-        plot_bgcolor='rgba(30, 30, 30, 0.4)',
-        paper_bgcolor='rgba(30, 30, 30, 0.4)',
+        plot_bgcolor='rgba(30, 30, 30, 0.9)',
+        paper_bgcolor='rgba(30, 30, 30, 0.9)',
         font_color='rgba(255, 255, 255, 0.9)',
         legend_title_text='',
         )
