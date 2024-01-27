@@ -164,4 +164,4 @@ if __name__ == '__main__':
     def callback_update_graph(option_slctd):
         return timeKeeper.update_graph(option_slctd)
 
-    app.run(debug=True, port=8051)
+    app.run(debug=True, port=8050)

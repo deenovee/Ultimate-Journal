@@ -80,7 +80,7 @@ class Exercise:
                 type_list = ["RUNNING", "LIFTING", "STRETCHING", "FIGHTING", "SPORTS", "JUMP ROPE", "STAIRS/HIKING", "BODY/LIGHTWEIGHT CIRCUIT"]
                 exercise_choice = self.inputs.get_list_choice(type_list)
                 print("Enter duration below:")
-                duration = self.inputs.get_int()
+                duration = self.inputs.get_float()
                 print("Enter effort below:")
                 effort = self.inputs.get_int()
                 print("Enter reps below:")

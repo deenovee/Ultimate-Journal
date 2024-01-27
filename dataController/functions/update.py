@@ -98,7 +98,7 @@ class Update:
                 except Exception as e:
                     print(f"An unexpected error occurred: {e}")
 
-            elif selectedKey == "distance" or selectedKey == "weight":
+            elif selectedKey == "distance" or selectedKey == "weight" or selectedKey == "duration":
                 while True:
                     newValue = input("Enter new value: ")
                     if newValue:
@@ -112,7 +112,7 @@ class Update:
                     else:
                         print("Invalid input, try again.")
 
-            elif selectedKey == "calories" or selectedKey == "protein" or selectedKey == "carbs" or selectedKey == "fat" or selectedKey == "quality" or selectedKey == "rating" or selectedKey == "duration" or selectedKey == "effort" or selectedKey == "reps" or selectedKey == "time":
+            elif selectedKey == "calories" or selectedKey == "protein" or selectedKey == "carbs" or selectedKey == "fat" or selectedKey == "quality" or selectedKey == "rating" or selectedKey == "effort" or selectedKey == "reps" or selectedKey == "time":
                 while True:
                     newValue = input("Enter new value: ")
                     if newValue:
