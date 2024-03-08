@@ -3,6 +3,8 @@ from dataController.journals.journal import Journal
 from dataController.journals.nutrition import Nutrition
 from dataController.journals.exercise import Exercise
 from dataController.journals.sleep import Sleep
+from dataController.journals.assets import Assets
+from dataController.journals.liabilities import Liabilities
 from colorama import Style, Fore
 
 timeKeeper = TimeKeeper()
@@ -10,7 +12,8 @@ journal = Journal()
 sleep = Sleep()
 exercise = Exercise()
 nutrition = Nutrition()
-
+assets = Assets()
+liabilities = Liabilities()
 
 def process_data(data_class):
     print(f"{data_class.__name__} selected...")
@@ -31,6 +34,28 @@ def process_data(data_class):
         elif user_choice == "6":
             data_class.displaySingleDate()
         elif user_choice == "7":
+            print("")
+            print(f"Exiting {data_class.__name__}...")
+            print("")
+            break
+        else:
+            print("Invalid input")
+
+def process_finance_data(data_class):
+    print(f"{data_class.__name__} selected...")
+    print("Recent Data: ")
+    data_class.displayAllData()
+    while True:
+        user_choice = input(Fore.BLUE + "(1)Insert, (2)Delete, (3)Update, (4)Exit: (1/2/3/4): " + Style.RESET_ALL)
+        if user_choice == "1":
+            data_class.collectData()
+        elif user_choice == "2":
+            data_class.deleteData()
+        elif user_choice == "3":
+            data_class.updateData()
+        # elif user_choice == "4":
+        #     data_class.filterData()
+        elif user_choice == "4":
             print("")
             print(f"Exiting {data_class.__name__}...")
             print("")
@@ -61,7 +86,19 @@ while True:
             else:
                 print("Invalid input")
     elif userInput == "4":
-        print("Finances selected...")
+        while True:
+            fiance_choice = input(Fore.BLUE + "(1)View Assets, (2)View Liabilities, (3)View Bank Transactions (4)Exit: (1/2/3/4): " + Style.RESET_ALL)
+            if fiance_choice == "1":
+                process_finance_data(assets)
+            elif fiance_choice == "2":
+                process_finance_data(liabilities)
+            elif fiance_choice == "3":
+                print("Bank Transactions not yet implemented")
+            elif fiance_choice == "4":
+                print("")
+                print("Exiting Finances...")
+                print("")
+                break
     elif userInput == "5":
         print("")
         print("Exiting...")

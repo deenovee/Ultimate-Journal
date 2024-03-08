@@ -1,5 +1,5 @@
 from dataController.functions.mongo import MongoDB
-from dataController.functions.display import Display
+from dataController.functions.display_all import DisplayAll
 from bson import ObjectId
 import datetime
 from datetime import date, timedelta
@@ -8,7 +8,7 @@ class Update:
     def __init__(self, collection):
         self.db = MongoDB(collection)
         self.collection = collection
-        self.display = Display(collection)
+        self.display = DisplayAll(collection)
         self.meal_types = ["SMALL MEAL", "LARGE MEAL", "SNACK", "DESSERT", "DRINK"]
         self.exercise_types = ["RUNNING", "LIFTING", "STRETCHING", "FIGHTING", "SPORTS", "JUMP ROPE", "STAIRS/HIKING", "BODY/LIGHTWEIGHT CIRCUIT"]
         self.tk_categories = ['HEALTH', 'WORK', 'PROJECT', 'EDUCATION', 'READING', 'HOBBY', 'NETWORKING', 'OTHER']
@@ -27,7 +27,7 @@ class Update:
     
     def update(self):
         try:
-            existingData = list(self.db.get({}))
+            existingData = list(self.db.get({})) 
         except Exception as e:
             print("Error retrieving data from database")
 
@@ -60,7 +60,7 @@ class Update:
                 except ValueError:
                     print("Invalid input try again.")
 
-            if selectedKey == "date":
+            if selectedKey == "date" or selectedKey == "purchase_date":
                 while True:
                     newValue = input("Enter new value (MM/DD/YY): ")
                     if newValue:
@@ -98,7 +98,7 @@ class Update:
                 except Exception as e:
                     print(f"An unexpected error occurred: {e}")
 
-            elif selectedKey == "distance" or selectedKey == "weight" or selectedKey == "duration":
+            elif selectedKey == "distance" or selectedKey == "weight" or selectedKey == "duration" or selectedKey == "asset_value" or selectedKey == "liability_amount":
                 while True:
                     newValue = input("Enter new value: ")
                     if newValue:
@@ -238,7 +238,7 @@ class Update:
                 print(e)
                 print("Error updating data from database\n")
 
-            self.display.display()
+            self.display.display_all()
         else:
             print("No data to update")
             print("Exiting...\n")    

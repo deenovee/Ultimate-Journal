@@ -13,7 +13,7 @@ class Filter:
             existingData = list(self.db.get({}))
         except Exception as e:
             print("Error retrieving data from database")
-        if existingData:
+        if existingData and self.collection != "assets":
             while True:
                 try:
                     date_start = input("Enter start date (MM/DD/YY): ")
@@ -66,6 +66,40 @@ class Filter:
                         print(output)
             else:
                 print("No data to display for that range")
+        elif self.collection == "assets":
+            while True:
+                try:
+                    asset_type = input("Enter asset type: ")
+                    break
+                except ValueError:
+                    print("Invalid input")
+
+            query = {
+                "type": asset_type
+            }
+            try:
+                filteredData = list(self.db.get(query))
+            except Exception as e:
+                print(e)
+                print("Error retrieving data from database\n")
+
+            if filteredData:
+                keys = filteredData[0].keys()
+                for index, i in enumerate(filteredData):
+                    j = index + 1
+                    output = f"Record {j}: \n"
+                    for key in keys:
+                        output += f"{key}: {i[key]}\n"
+                    if j == len(filteredData):
+                        print("")
+                        print(output)
+                        print("")
+                    else:
+                        print("")
+                        print(output)
+            else:
+                print("No data to display")
+
         else:
             print("No data to display")
 

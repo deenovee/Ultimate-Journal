@@ -30,4 +30,4 @@ class DisplayAll:
                     print(output)
         else:
             print("No data to display")
-            print("Exiting...\n")
+            # print("Exiting...\n")

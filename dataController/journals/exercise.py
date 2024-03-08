@@ -72,10 +72,11 @@ class Exercise:
         try:    
             print("Enter number of exercises to enter: ")
             inputNumber = self.inputs.get_int()
-
+            print("Enter date below:")
+            date = self.inputs.get_date()
+            
             for i in range(int(inputNumber)):
-                print("Enter date below:")
-                date = self.inputs.get_date()
+
                 print("Enter exercise type below:")
                 type_list = ["RUNNING", "LIFTING", "STRETCHING", "FIGHTING", "SPORTS", "JUMP ROPE", "STAIRS/HIKING", "BODY/LIGHTWEIGHT CIRCUIT"]
                 exercise_choice = self.inputs.get_list_choice(type_list)

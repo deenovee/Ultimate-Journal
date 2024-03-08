@@ -77,3 +77,19 @@ class Inputs:
         except Exception as e:
             print(e)
             print("Error getting list choice")
+
+    def get_string(self):
+        try:
+            while True:
+                value = input("")
+                try:
+                    if value:
+                        break
+                    else:
+                        print("Invalid input")
+                except ValueError:
+                    print("Invalid input")
+            return value
+        except Exception as e:
+            print(e)
+            print("Error getting string")

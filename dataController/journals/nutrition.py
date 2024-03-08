@@ -77,11 +77,12 @@ class Nutrition:
                     break
                 else:
                     print("Invalid input. Please enter a number between 1 and 10.")
+            
+            print("Enter date (MM/DD/YY): ")
+            date = self.inputs.get_date()
 
             for i in range(int(inputNumber)):
 
-                print("Enter date (MM/DD/YY): ")
-                date = self.inputs.get_date()
                 print("Enter meal calories: ")
                 calories = self.inputs.get_int()
                 print("Enter meal protein: ")
