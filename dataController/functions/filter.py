@@ -2,11 +2,15 @@ from dataController.functions.mongo import MongoDB
 from bson import ObjectId
 import datetime
 from datetime import date, timedelta
+import os
+from dotenv import load_dotenv
 
 class Filter:
     def __init__(self, collection):
+        load_dotenv()
         self.db = MongoDB(collection)
         self.collection = collection
+        self.bank_1 = os.getenv("BANK_1")
 
     def filter(self):
         try:
@@ -36,7 +40,7 @@ class Filter:
                         "$lte": parsed_end_date
                     }
                 }
-            elif self.collection == "wells_fargo":
+            elif self.collection == f"{self.bank_1}":
                 query = {
                     "transaction_date": {
                         "$gte": parsed_start_date,
