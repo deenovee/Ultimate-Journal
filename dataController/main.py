@@ -5,6 +5,8 @@ from dataController.journals.exercise import Exercise
 from dataController.journals.sleep import Sleep
 from dataController.journals.assets import Assets
 from dataController.journals.liabilities import Liabilities
+from dataController.journals.bank1 import BANK1
+from dataController.journals.bank2 import BANK2
 from dataController.functions.mongo import MongoDB
 from colorama import Style, Fore
 from Crypto.Cipher import AES
@@ -13,6 +15,7 @@ from base64 import b64encode, b64decode
 import bcrypt
 import getpass
 import os
+from dotenv import load_dotenv
 
 timeKeeper = TimeKeeper()
 journal = Journal()
@@ -21,7 +24,12 @@ exercise = Exercise()
 nutrition = Nutrition()
 assets = Assets()
 liabilities = Liabilities()
+bank_1_class = BANK1()
+bank_2_class = BANK2()
 mongo = MongoDB("admin")
+load_dotenv()
+bank_1 = os.getenv("BANK_1")
+bank_2 = os.getenv("BANK_2")
 
 def process_data(data_class):
     print(f"{data_class.__name__} selected...")
@@ -45,6 +53,7 @@ def process_data(data_class):
             print("")
             print(f"Exiting {data_class.__name__}...")
             print("")
+            data_class.close()
             break
         elif user_choice.lower() == "clear":
             clear_screen()
@@ -69,6 +78,30 @@ def process_finance_data(data_class):
             print("")
             print(f"Exiting {data_class.__name__}...")
             print("")
+            data_class.close()
+            break
+        elif user_choice.lower() == "clear":
+            clear_screen()
+        else:
+            print("Invalid input")
+
+def process_bank_data(data_class):
+    print(f"{data_class.__name__}")
+    while True:
+        user_choice = input(Fore.BLUE + "(1)Insert, (2)Delete, (3)Display Last 7 Days, (4)List By Date Range, (5)Exit: (1/2/3/4/5): " + Style.RESET_ALL)
+        if user_choice == "1":
+            data_class.collectData()
+        elif user_choice == "2":
+            data_class.deleteData()
+        elif user_choice == "3":
+            data_class.displayData()
+        elif user_choice == "4":
+            data_class.filterData()
+        elif user_choice == "5":
+            print("")
+            print(f"Exiting {data_class.__name__}...")
+            print("")
+            data_class.close()
             break
         elif user_choice.lower() == "clear":
             clear_screen()
@@ -84,10 +117,9 @@ def authenticate_user(password):
     return False
 
 def clear_screen():
-    # Clear screen based on the operating system
-    if os.name == 'posix':  # For Unix/Linux/Mac OS
+    if os.name == 'posix':
         _ = os.system('clear')
-    elif os.name == 'nt':   # For Windows
+    elif os.name == 'nt':
         _ = os.system('cls')
 
 while True:
@@ -125,7 +157,16 @@ while True:
                 elif finance_choice == "2":
                     process_finance_data(liabilities)
                 elif finance_choice == "3":
-                    print("Bank Transactions not yet implemented")
+                    bank_choice = input(Fore.MAGENTA + f"(1){bank_1}, (2){bank_2} (3)Exit (1/2/3): " + Style.RESET_ALL )
+                    if bank_choice == '1':
+                        process_bank_data(bank_1_class)
+                    if bank_choice == '2':
+                        process_bank_data(bank_2_class)
+                    if bank_choice == '3':
+                        print("")
+                        print("Exiting Bank Transactions...")
+                        print("")
+                        break
                 elif finance_choice == "4":
                     print("")
                     print("Exiting Finances...")
@@ -143,5 +184,7 @@ while True:
         exercise.close()
         nutrition.close()
         exit()
+    elif userInput.lower() == "clear":
+        clear_screen()
     else:
         print("TimeKeeper, Journal, Health, or Exit")

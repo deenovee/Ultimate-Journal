@@ -13,7 +13,7 @@ class Filter:
             existingData = list(self.db.get({}))
         except Exception as e:
             print("Error retrieving data from database")
-        if existingData and self.collection != "assets":
+        if existingData:
             while True:
                 try:
                     date_start = input("Enter start date (MM/DD/YY): ")
@@ -32,6 +32,13 @@ class Filter:
             if self.collection =="sleep":
                 query = {
                     "time_end": {
+                        "$gte": parsed_start_date,
+                        "$lte": parsed_end_date
+                    }
+                }
+            elif self.collection == "wells_fargo":
+                query = {
+                    "transaction_date": {
                         "$gte": parsed_start_date,
                         "$lte": parsed_end_date
                     }
